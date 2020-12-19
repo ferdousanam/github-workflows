@@ -1,0 +1,29 @@
+name: Digital Ocean
+# Using this configuration we can deploy project using SSH & github on Digital Ocean VPS
+
+on:
+  push:
+    branches:
+      - deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # DOC: https://github.com/marketplace/actions/ssh-remote-commands
+      - name: Executing remote SSH command
+        uses: appleboy/ssh-action@master
+        env:
+          CHECKOUT_BRANCH: ${{ secrets.CHECKOUT_BRANCH }}
+        with:
+          host: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PORT: ${{ secrets.PORT }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            whoami
+            cd /var/www
+            ls -al
+            git remote -v
+            git branch
+            git checkout $CHECKOUT_BRANCH
